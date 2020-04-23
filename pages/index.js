@@ -155,6 +155,14 @@ function Index(props) {
     fetchAccountInfo()
   }, [employee_number])
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setResponseMessage('');
+      setEmployee_number('');
+    }, 3000);
+    return () => clearTimeout(timer);
+  })
+
   async function handleSubmitLoadAccount(){
     setOpenNext(false);
     setOpenBackrop(!openBackdrop)

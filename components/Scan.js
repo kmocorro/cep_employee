@@ -30,9 +30,9 @@ export default function Scan(props) {
                 label="Barcode / Employee number" 
                 fullWidth 
                 variant="outlined" 
-                autoFocus 
                 placeholder="Employee Number" 
                 onClick={props.handleEmployeeNumberOnClick}
+                autoFocus 
               />
             </Grid>
           </Grid>
