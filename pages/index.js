@@ -1,15 +1,92 @@
 import React, {Fragment, useState, useEffect} from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '../components/AppBar';
 import ScanLayout from '../components/ScanLayout';
 import Scan from '../components/Scan';
 import ResultLayout from '../components/ResultLayout';
 import Result from '../components/Result';
+import Toolbar from '@material-ui/core/Toolbar';
+import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography';
+import moment from 'moment';
+import MaterialTable from 'material-table'
+import { forwardRef } from 'react';
+
+import AddBox from '@material-ui/icons/AddBox';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import Check from '@material-ui/icons/Check';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Clear from '@material-ui/icons/Clear';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import FilterList from '@material-ui/icons/FilterList';
+import FirstPage from '@material-ui/icons/FirstPage';
+import LastPage from '@material-ui/icons/LastPage';
+import Remove from '@material-ui/icons/Remove';
+import SaveAlt from '@material-ui/icons/SaveAlt';
+import Search from '@material-ui/icons/Search';
+import ViewColumn from '@material-ui/icons/ViewColumn';
+const tableIcons = {
+  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  appBarTitle: {
+    flex: 1
+  },
+  dashdate: {
+    margin: 20
+  },
+  table: {
+    minWidth: 650,
+  },
+  header: {
+    marginTop: 20
+  },
+  logs: {
+    marginTop: 20,
+    marginBottom: 50
+  }
+}));
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 
 function Index(props) {
+  const classes = useStyles();
   //console.log(props);
   const [ canteenUserData, setCanteenUserData ] = useState('');
-  console.log(canteenUserData);
+  const [ employeeUserData, setEmployeeUserData ] = useState('');
+  console.log(employeeUserData);
   const [ employee_number, setEmployee_number ] = useState('');
   const [ userData, setUserData ] = useState({});
   //console.log(userData);
@@ -106,7 +183,7 @@ function Index(props) {
   // get acccount info ----------
   useEffect(() => {
     async function fetchAccountInfo(){
-      let route = 'http://dev-metaspf401.sunpowercorp.com:4848/getaccountinfo'
+      let route = 'http://dev-metaspf401.sunpowercorp.com:4850/getaccountinfo'
       
       let response = await fetch(`${route}/${employee_number}`)
 
@@ -121,7 +198,7 @@ function Index(props) {
   // get acccount info again----------
   useEffect(() => {
     async function fetchAccountInfo(){
-      let route = 'http://dev-metaspf401.sunpowercorp.com:4848/getaccountinfo'
+      let route = 'http://dev-metaspf401.sunpowercorp.com:4850/getaccountinfo'
       
       let response = await fetch(`${route}/${employee_number}`)
 
@@ -137,7 +214,7 @@ function Index(props) {
   // get user info ----------
   useEffect(() => {
     async function fetchAccountInfo(){
-      let route = 'http://dev-metaspf401.sunpowercorp.com:4848/getuserprofile'
+      let route = 'http://dev-metaspf401.sunpowercorp.com:4850/getuserprofile'
       
       let response = await fetch(`${route}`, {
         method: 'POST',
@@ -155,6 +232,23 @@ function Index(props) {
     fetchAccountInfo()
   }, [employee_number])
 
+  // get user info ----------
+  useEffect(() => {
+    async function fetchAccountInfo(){
+      let route = 'http://dev-metaspf401.sunpowercorp.com:4850/gettransactionlogs'
+      
+      let response = await fetch(`${route}/${employee_number}`)
+
+      if(response.status === 200){
+        setEmployeeUserData(await response.json())
+      }
+    }
+
+    fetchAccountInfo()
+  }, [employee_number])
+  
+  
+  /*
   useEffect(() => {
     const timer = setTimeout(() => {
       setResponseMessage('');
@@ -162,12 +256,13 @@ function Index(props) {
     }, 3000);
     return () => clearTimeout(timer);
   })
+  */
 
   async function handleSubmitLoadAccount(){
     setOpenNext(false);
     setOpenBackrop(!openBackdrop)
 
-    let route = 'http://dev-metaspf401.sunpowercorp.com:4848/loadaccount'
+    let route = 'http://dev-metaspf401.sunpowercorp.com:4850/loadaccount'
 
     let response = await fetch(`${route}`, {
       method: 'POST',
@@ -226,6 +321,32 @@ function Index(props) {
         :<></>
       }
       </ResultLayout>
+      <Container maxWidth="sm">
+        <Grid container className={classes.logs}>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            {
+              typeof employeeUserData !== 'undefined' && employeeUserData !== 'null' && employeeUserData.length > 0 ?
+                <MaterialTable
+                  icons={tableIcons}
+                  columns={[
+                    { title: 'Transaction Date', field: 'transaction_date', defaultSort: 'desc' },
+                    { title: 'Cashier', field: 'cashier' },
+                    { title: 'Transaction', field: 'transaction_type' },
+                    { title: 'Amount', field: 'amount', type: 'numeric' }
+                  ]}
+                  data={employeeUserData}
+                  title={`${userData.name} - CEP Transaction logs ${new Date()}`}
+                  options={{
+                    exportButton: true,
+                    exportAllData: true,
+                  }}
+                />
+              :
+              <></>
+            }
+          </Grid>
+        </Grid>
+      </Container>
     </Fragment>
   );
 }

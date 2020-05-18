@@ -98,7 +98,6 @@ export default function Result(props) {
           </Grid>
         </Grid>
       </CardContent>
-      <Divider />
       { /*
       <CardContent>
         <Grid container spacing={1}>

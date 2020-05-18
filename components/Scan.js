@@ -33,6 +33,7 @@ export default function Scan(props) {
                 placeholder="Employee Number" 
                 onClick={props.handleEmployeeNumberOnClick}
                 autoFocus 
+                margin='dense'
               />
             </Grid>
           </Grid>
